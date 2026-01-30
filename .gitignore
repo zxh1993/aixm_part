@@ -1,0 +1,61 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+.Python
+
+# Distribution / packaging
+dist/
+build/
+*.egg
+*.egg-info/
+*.whl
+*.tar.gz
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Testing / Coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Logs
+*.log
+/logs/
+
+# Data and models
+/data/
+/models/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Cache / Temp
+.cache/
+*.tmp
+*.bak
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+
