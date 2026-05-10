@@ -34,7 +34,7 @@ class RedisLock:
         lock_end_time = time.time() + self.acquire_timeout
         while time.time() < lock_end_time:
             if redis_conn(self.redis_conf).set(self.lock_name, self.uuid, ex=self.lock_timeout, nx=True):
-                return
+                return self
             time.sleep(0.01)
         self.uuid = None
         raise Exception("RedisLock acquire_timeout")

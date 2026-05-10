@@ -1,30 +1,18 @@
 # aixm
 
-部分通用的 Python 工具库
+`aixm` 是内部项目共用的 Python 工具包，当前主要保留：
 
-## 功能特性
-
-- **redis_lock**: Redis 分布式锁
-- **logging**: 日志工具
-- **path**: 路径处理工具
-- **convert**: 类型转换工具
-- **utils**: 通用工具函数
+- `aixm.utils`：路径、日志、Redis、常用工具函数。
+- `aixm.zrpc`：基于 Redis 队列的内部 RPC 工具。
 
 ## 安装
 
-```bash
-pip install aixm
-```
+支持 Python 3.8 及以上版本。
 
-## 要求
+运行时外部依赖：
 
-Python >= 3.12
+- `redis>=4.2.0`
 
-## 许可证
+## 配置
 
-MIT License
-
-## 项目地址
-
-https://github.com/zxh1993/aixm_part
-
+配置读取顺序为：环境变量、配置文件、默认值。

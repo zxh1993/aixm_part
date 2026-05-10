@@ -1,7 +1,7 @@
 # @Time   : 2020-04-05
 # @Author : zhangxinhao
 # @Compile : True
-from .project_path import relative_logs_path, DIR_SPLIT
+from aixm._internal.path import relative_logs_path
 import threading
 import logging
 import logging.handlers
@@ -70,13 +70,14 @@ def init_logger(appname=None, filename=None, log_id=None, exist_ok=False,
     if rotating_conf is None:
         rotating_conf = {'when': 'W0', 'interval': 1, 'backupCount': 53}  # )
     with _log_mutex:  # 日志只初始化一次
-        if _logger_dict.get(appname) is not None:
+        if appname is None:
+            run_path = os.path.realpath(sys.argv[0])
+            appname = os.path.splitext(os.path.basename(run_path))[0]  # 初始化为文件名
+        logger = _logger_dict.get(appname)
+        if logger is not None:
             if exist_ok:
                 return
             raise Exception(appname + '日志初始化两次!')
-        if appname is None:
-            run_path = os.path.realpath(sys.argv[0])
-            appname = run_path[run_path.rfind(DIR_SPLIT) + 1:-3]  # 初始化为文件名
         if filename is None:
             filename = appname
         logger = logging.getLogger(appname)
@@ -106,7 +107,8 @@ def log(appname=None) -> logging.Logger:
     if appname is None:
         return _default_logger
     logger = _logger_dict.get(appname)
-    assert logger is not None, appname + ' 日志未初始化!'
+    if logger is None:
+        raise RuntimeError(appname + ' 日志未初始化!')
     return logger
 
 

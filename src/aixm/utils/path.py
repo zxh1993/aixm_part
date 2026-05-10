@@ -17,11 +17,14 @@ def search_filepaths(root_path, file_filter) -> list:
 
 def parse_filepath_prefix(filepath) -> str:
     name = parse_filepath_name(filepath)
-    return name.split('.')[0]
+    return os.path.splitext(name)[0]
 
 
 def parse_filepath_suffix(filepath) -> str:
-    return filepath.split('.')[1]
+    suffix = os.path.splitext(filepath)[1]
+    if suffix.startswith('.'):
+        return suffix[1:]
+    return suffix
 
 
 def parse_filepath_name(filepath) -> str:
@@ -37,7 +40,10 @@ def parse_filepath_dir(filepath) -> str:
 
 
 def replace_filepath_suffix(filepath, new_suffix) -> str:
-    return filepath.split('.')[0] + '.' + new_suffix
+    root, _ = os.path.splitext(filepath)
+    if new_suffix.startswith('.'):
+        return root + new_suffix
+    return root + '.' + new_suffix
 
 
 def split_filepath(filepath) -> typing.Tuple[typing.AnyStr, typing.AnyStr]:

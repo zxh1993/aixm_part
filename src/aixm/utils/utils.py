@@ -6,8 +6,6 @@ import os
 import datetime
 import time
 import math
-import platform
-import importlib
 
 
 def cal_str_md5(s) -> str:
@@ -21,10 +19,47 @@ def cal_file_md5(filepath) -> str:
     return md5
 
 
-def get_class_or_func(class_or_func_path):
-    class_module = class_or_func_path[:class_or_func_path.rfind('.')]
-    class_or_func_path = class_or_func_path[class_or_func_path.rfind('.') + 1:]
-    return getattr(importlib.import_module(class_module), class_or_func_path)
+def remove_file(filepath):
+    if os.path.isfile(filepath):
+        os.remove(filepath)
+
+
+def encrypt(src_file, dest_file, secret_key, block_size=16):
+    f_out = open(dest_file, 'wb')
+    index = 0
+    secret_key = secret_key.encode()
+    secret_key_len = len(secret_key)
+    with open(src_file, 'rb') as f:
+        while True:
+            s = f.read(block_size)
+            f_out.write(s)
+            if len(s) < block_size:
+                break
+            s = f.read(1)
+            if len(s) < 1:
+                break
+            f_out.write(bytes([(int(s[0]) + int(secret_key[index])) % 256]))
+            index = (index + 1) % secret_key_len
+    f_out.close()
+
+
+def decrypt(src_file, dest_file, secret_key, block_size=16):
+    f_out = open(dest_file, 'wb')
+    index = 0
+    secret_key = secret_key.encode()
+    secret_key_len = len(secret_key)
+    with open(src_file, 'rb') as f:
+        while True:
+            s = f.read(block_size)
+            f_out.write(s)
+            if len(s) < block_size:
+                break
+            s = f.read(1)
+            if len(s) < 1:
+                break
+            f_out.write(bytes([(int(s[0]) - int(secret_key[index]) + 256) % 256]))
+            index = (index + 1) % secret_key_len
+    f_out.close()
 
 
 def current_time() -> tuple:
@@ -89,20 +124,4 @@ class TimeNow:
         return int(time.mktime(ta))
 
 
-_is_linux = platform.system().lower() == 'linux'
-
-
-def is_x86() -> bool:
-    if not _is_linux:
-        return True
-    try:
-        x = os.popen("uname -a")
-        for xx in x:
-            if "x86_64" in xx:
-                return True
-    except:
-        pass
-    return False
-
-
-__all__ = ['cal_str_md5', 'cal_file_md5', 'get_class_or_func', 'current_time', 'TimeNow', 'is_x86']
+__all__ = ['cal_str_md5', 'cal_file_md5', 'remove_file', 'encrypt', 'decrypt', 'current_time', 'TimeNow']
